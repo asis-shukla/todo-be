@@ -1,0 +1,26 @@
+{
+  "name": "todo-be",
+  "version": "1.0.0",
+  "description": "Code repo for back end part of todo app in form of REST APIs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asis-shukla/todo-be.git"
+  },
+  "keywords": [
+    "TODO",
+    "REST",
+    "API",
+    "NODE",
+    "MongoDB"
+  ],
+  "author": "Ashish Shukla",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asis-shukla/todo-be/issues"
+  },
+  "homepage": "https://github.com/asis-shukla/todo-be#readme"
+}
