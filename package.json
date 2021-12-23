@@ -19,7 +19,7 @@
     "MongoDB"
   ],
   "author": "Ashish Shukla",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/asis-shukla/todo-be/issues"
   },
