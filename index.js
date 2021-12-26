@@ -21,15 +21,23 @@ const todosData = [
     _id: 3,
   },
 ];
-app.get("/", (req, res) => {
-  res.send("root path response");
-});
 
 // To get the full list of todos
 app.get("/api/todos", (req, res) => {
   res.json({
     todos: todosData,
   });
+});
+// get detail of single todo
+app.get("/api/todos/:id", (req, res) => {
+  const todo = todosData.find((item) => {
+    return item._id == req.params.id;
+  });
+  if (todo) {
+    res.json(todo);
+  } else {
+    res.json({ error: "Not Found" });
+  }
 });
 
 // to add the new task into the list
