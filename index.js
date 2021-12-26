@@ -1,33 +1,40 @@
 import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+const result = dotenv.config();
+if (result.error) {
+  throw result.error;
+}
+// console.log(result.parsed);
+console.log(process.env["MONGO_URI"]);
+const mySecret = process.env["MONGO_URI"];
+mongoose.connect(mySecret, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const todoSchema = new mongoose.Schema({
+  todo: {
+    type: String,
+    required: true,
+  },
+  done: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+});
+const Todo = mongoose.model("Todo", todoSchema);
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const todosData = [
-  {
-    todo: "Read the book",
-    done: false,
-    _id: 1,
-  },
-  {
-    todo: "Call Someone",
-    done: false,
-    _id: 2,
-  },
-  {
-    todo: "Complete the T",
-    done: false,
-    _id: 3,
-  },
-];
-
 // To get the full list of todos
 app.get("/api/todos", (req, res) => {
-  res.json({
-    todos: todosData,
+  Todo.find({}, (err, allTodos) => {
+    if (err) return console.error(err);
+    res.json(allTodos);
   });
 });
+
 // get detail of single todo
 app.get("/api/todos/:id", (req, res) => {
   const todo = todosData.find((item) => {
