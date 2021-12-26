@@ -6,7 +6,7 @@ if (result.error) {
   throw result.error;
 }
 // console.log(result.parsed);
-console.log(process.env["MONGO_URI"]);
+// console.log(process.env["MONGO_URI"]);
 const mySecret = process.env["MONGO_URI"];
 mongoose.connect(mySecret, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -36,10 +36,8 @@ app.get("/api/todos", (req, res) => {
 });
 
 // get detail of single todo
-app.get("/api/todos/:id", (req, res) => {
-  const todo = todosData.find((item) => {
-    return item._id == req.params.id;
-  });
+app.get("/api/todos/:id", async (req, res) => {
+  const todo = await Todo.findById(req.params.id);
   if (todo) {
     res.json(todo);
   } else {
@@ -47,47 +45,37 @@ app.get("/api/todos/:id", (req, res) => {
   }
 });
 
-// to add the new task into the list
-app.post("/api/todos", (req, res) => {
-  todosData.push(req.body);
-  res.json({
-    todos: todosData,
+// to add a new task into the list
+app.post("/api/todos", async (req, res) => {
+  const postTodoData = req.body;
+  Todo.create(postTodoData, (err, newTodo) => {
+    if (err) return console.error(err);
+    res.json(newTodo);
   });
 });
 
 // to remove the task from the list
 app.delete("/api/todos/:id", (req, res) => {
-  (todosData = todosData.filter((item) => {
-    return item._id == id;
-  })),
+  Todo.findByIdAndDelete(req.params.id, (req, deleteRes) => {
     res.status(204);
-  res.json({});
+    res.json(deleteRes);
+  });
 });
 
 // to change the done status and edit the task
 app.put("/api/todos/:id", (req, res) => {
-  // change the done status
   const toDoId = req.params.id;
-  const todoItem = todosData.find((item) => {
-    return item._id == toDoId;
-  });
-  todosData = todosData.map((item) => {
-    if (item._id == toDoId) {
-      return {
-        ...item,
-        todo: req.body.todo,
-        done: req.body.done,
-      };
-    } else {
-      return item;
-    }
-  });
-
-  return {
-    ...todoItem,
+  const update = {
     todo: req.body.todo,
     done: req.body.done,
   };
+  const options = {
+    new: true,
+  };
+  Todo.findByIdAndUpdate(toDoId, update, options, (err, newTodo) => {
+    if (err) return console.error(err);
+    res.json(newTodo);
+  });
 });
 
 app.listen(3000, "localhost", () => {
