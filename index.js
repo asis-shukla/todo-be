@@ -2,9 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 const result = dotenv.config();
-if (result.error) {
-  throw result.error;
-}
+// if (result.error) {
+//   throw result.error;
+// }
 // console.log(result.parsed);
 // console.log(process.env["MONGO_URI"]);
 const mySecret = process.env["MONGO_URI"];
