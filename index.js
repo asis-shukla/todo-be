@@ -2,9 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 const result = dotenv.config();
-// if (result.error) {
-//   throw result.error;
-// }
+if (result.error) {
+  throw result.error;
+}
 // console.log(result.parsed);
 // console.log(process.env["MONGO_URI"]);
 const mySecret = process.env["MONGO_URI"];
@@ -26,6 +26,14 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
+  res.send("Home page of todo be");
+})
+
+app.get("/api", (req, res) => {
+  res.send("API page of todo be");
+})
 
 // To get the full list of todos
 app.get("/api/todos", (req, res) => {
