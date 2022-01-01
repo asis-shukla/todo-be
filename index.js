@@ -1,13 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-const result = dotenv.config();
 
-if (result.error) {
-  throw result.error;
-}
-// console.log(result.parsed);
-// console.log(process.env["MONGO_URI"]);
+dotenv.config();
+
 const mySecret = process.env["MONGO_URI"];
 mongoose.connect(mySecret, { useNewUrlParser: true, useUnifiedTopology: true });
 
