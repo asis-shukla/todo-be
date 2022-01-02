@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -20,7 +21,7 @@ const todoSchema = new mongoose.Schema({
 });
 const Todo = mongoose.model("Todo", todoSchema);
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
