@@ -56,6 +56,7 @@ app.post("/api/todos", async (req, res) => {
   const postTodoData = req.body;
   Todo.create(postTodoData, (err, newTodo) => {
     if (err) return console.error(err);
+    res.status(201);
     res.json(newTodo);
   });
 });
