@@ -69,6 +69,13 @@ app.delete("/api/todos/:id", (req, res) => {
   });
 });
 
+// to delete all todos
+app.delete("/api/todos", (req, res) => {
+  Todo.deleteMany({}, (req, deleteRes) => {
+    res.json(deleteRes);
+  })
+});
+
 // to change the done status and edit the task
 app.put("/api/todos/:id", (req, res) => {
   const toDoId = req.params.id;
