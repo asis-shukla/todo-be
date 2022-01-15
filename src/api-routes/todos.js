@@ -1,9 +1,11 @@
 import express from "express";
 const router = express.Router();
 import Todo from "../models/todo-model.js";
+import authVerify from "./verify-token.js";
 
 // To get the full list of todos
-router.get("/", (req, res) => {
+router.get("/", authVerify, (req, res) => {
+  console.log("current logged in user", req.user);
   Todo.find({}, (err, allTodos) => {
     if (err) return console.error(err);
     res.json(allTodos);
