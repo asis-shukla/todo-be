@@ -1,61 +1,54 @@
 import express from "express";
 const router = express.Router();
 import bcrypt from "bcryptjs";
-import User from "../models/user-model.js";
+import User, {
+  newUserValidation,
+  userLoginValidation,
+} from "../models/user-model.js";
 
-router.post("/", (req, MainRes) => {
+router.post("/", async (req, MainRes) => {
   const postedUserData = req.body;
+  const { error } = newUserValidation(postedUserData);
+  if (error) {
+    return MainRes.status(400).json({ errorMsg: error.details[0].message });
+  }
   const hash = bcrypt.hashSync(req.body.password);
-  User.exists({ email: req.body.email }, (req, userAlreadyExist) => {
+  try {
+    const userAlreadyExist = await User.exists({ email: req.body.email });
     if (userAlreadyExist) {
-      MainRes.status(409);
-      MainRes.json({
-        errorMsg: "User already exist",
-        _error: userAlreadyExist,
-      });
+      MainRes.status(409).json({ errorMsg: "User already exist" });
     } else {
-      User.create({ ...postedUserData, password: hash }, (err, newUser) => {
-        if (err) {
-          MainRes.status(500);
-          MainRes.json({
-            errorMsg: "some error during Create",
-            _error: err,
-          });
-        }
-        MainRes.status(201);
-        MainRes.json(newUser);
+      const newAddedUser = await User.create({
+        ...postedUserData,
+        password: hash,
       });
+      MainRes.status(201).json(newAddedUser);
     }
-  });
+  } catch (error) {
+    MainRes.status(500).json(error);
+  }
 });
 
-router.get("/login", (req, res) => {
-  const userDetails = {
-    email: req.body.email,
-  };
-  User.findOne(userDetails, (err, savedUserData) => {
-    if (err || !savedUserData) {
-      res.json({
-        errorMsg: "Email or password is inccorrect",
-        _error: "Unauthorized",
-      });
-    } else {
-      if (bcrypt.compareSync(req.body.password, savedUserData.password)) {
-        const cud = {
-          ...savedUserData._doc,
-          password: null,
-          token: "dfsffasdasfaf",
-        };
-        res.json(cud);
-      } else {
-        res.status(401);
-        res.json({
-          errorMsg: "Email or password is inccorrect",
-          _error: "Unauthorized",
-        });
-      }
+router.get("/login", async (req, res) => {
+  const { error } = userLoginValidation(req.body);
+  if (error) {
+    return res.status(400).json({ errorMsg: error.details[0].message });
+  }
+  try {
+    const savedUserData = await User.findOne({ email: req.body.email });
+    if (!savedUserData) {
+      return res.status(404).json({ errorMsg: "User not found" });
     }
-  });
+    if (bcrypt.compareSync(req.body.password, savedUserData.password)) {
+      res
+        .status(200)
+        .json({ ...savedUserData._doc, password: null, token: "dasd" });
+    } else {
+      res.status(401).json({ errorMsg: "Email or password is incorrect" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 export default router;
