@@ -56,7 +56,7 @@ router.post("/", async (req, MainRes) => {
   }
 });
 
-router.get("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   const postedUserData = req.body;
   const { error } = userLoginValidation(postedUserData);
   if (error) {
