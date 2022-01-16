@@ -27,11 +27,12 @@ export const newUserValidation = (data) => {
 };
 
 export const userLoginValidation = (data) => {
-  const userJoiSchema = Joi.object({
+  const loginuserSchema = Joi.object({
     email: Joi.string().min(6).max(512).email().exist(),
     password: Joi.string().min(6).max(1024).exist(),
   });
-  return userJoiSchema.validate(data);
+
+  return loginuserSchema.validate(data);
 };
 
 const User = mongoose.model("User", userSchema);

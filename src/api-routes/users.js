@@ -57,7 +57,8 @@ router.post("/", async (req, MainRes) => {
 });
 
 router.get("/login", async (req, res) => {
-  const { error } = userLoginValidation(req.body);
+  const postedUserData = req.body;
+  const { error } = userLoginValidation(postedUserData);
   if (error) {
     return res
       .status(400)
@@ -70,7 +71,7 @@ router.get("/login", async (req, res) => {
       );
   }
   try {
-    const savedUserData = await User.findOne({ email: req.body.email });
+    const savedUserData = await User.findOne({ email: postedUserData.email });
     if (!savedUserData) {
       return res
         .status(404)
@@ -83,7 +84,7 @@ router.get("/login", async (req, res) => {
         );
     }
     const isValidPass = await bcrypt.compare(
-      req.body.password,
+      postedUserData.password,
       savedUserData.password
     );
     if (isValidPass) {
