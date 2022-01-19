@@ -9,7 +9,7 @@ import errorTypes from "./errorTypes.js";
 
 const router = express.Router();
 
-const errorResponse = (errorType, errorMessage, errorCode) => {
+export const errorResponse = (errorType, errorMessage, errorCode) => {
   return {
     error: {
       type: errorType,
@@ -97,6 +97,10 @@ router.post("/login", async (req, res) => {
       const token = jwt.sign(userData, tokenSecret);
       res
         .header("auth-token", token)
+        .cookie("jwttoken", token, {
+          expires: new Date(Date.now() + 900000),
+          httpOnly: true,
+        })
         .status(200)
         .json({ ...userData, token: token });
     } else {

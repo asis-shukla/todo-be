@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 
 function authVerify(req, res, next) {
-  const token = req.header("auth-token");
+  const token = req.header("Authorization").split(" ")[1];
   if (!token) {
     return res
       .status(401)
-      .json({ errorMsg: "No token found in header field 'auth-token'" });
+      .json({ errorMsg: "No token found in header field 'Authorization'" });
   }
   try {
     const verified = jwt.verify(token, process.env.TOKEN_SECRET);
