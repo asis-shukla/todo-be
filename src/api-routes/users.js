@@ -43,7 +43,17 @@ router.post("/", async (req, MainRes) => {
         ...postedUserData,
         password: hash,
       });
-      return MainRes.status(201).json(newAddedUser);
+      const userData = {
+        fullname: newAddedUser?.fullname,
+        email: newAddedUser?.email,
+        _id: newAddedUser?._id,
+      };
+      const tokenSecret = process.env.TOKEN_SECRET;
+      const token = jwt.sign(userData, tokenSecret);
+      return MainRes.status(201).json({
+        ...userData,
+        token: token,
+      });
     }
   } catch (error) {
     MainRes.status(500).json(
